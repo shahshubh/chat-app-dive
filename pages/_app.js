@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { auth, firestore } from "../Firebase/index";
+import { auth } from "../Firebase/index";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 function MyApp({ Component, pageProps }) {

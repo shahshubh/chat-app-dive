@@ -15,7 +15,6 @@ const Sidebar = ({ user, handler }) => {
 
 	const router = useRouter();
 
-	// Generating list of users using this webapp with their online status
 	let list = value?.docs.map((doc) => {
 		doc = doc.data();
 		let status =
@@ -42,7 +41,6 @@ const Sidebar = ({ user, handler }) => {
 					<div className="name">{doc.displayName}</div>
 					<div className="status">
 						<i className={`fa fa-circle ${status}`}></i>
-						{/* <FontAwesomeIcon icon="circle" color={status === "online" ? "green" : "red"} /> */}
 						{status}{" "}
 					</div>
 				</div>

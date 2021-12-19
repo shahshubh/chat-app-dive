@@ -1,15 +1,13 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useList } from "react-firebase-hooks/database";
 import { auth, firestore, firebase } from "../Firebase/index";
 import constants from "../constants/constants";
 
-const scrollToBottom = (element) =>{
-  if(element != null){
+const scrollToBottom = (element) => {
+  if (element != null) {
     element.scrollTop = element.scrollHeight - element.clientHeight;
   }
 }
-
-
 
 const Chat = ({ data, room }) => {
   const [input, setInput] = useState("");
@@ -19,7 +17,7 @@ const Chat = ({ data, room }) => {
 
   // on page load scroll to bottom
   useEffect(() => {
-    if(document.querySelector(".chat-history") !== null){
+    if (document.querySelector(".chat-history") !== null) {
       scrollToBottom(document.querySelector(".chat-history"));
     }
   }, [messages]);
@@ -27,12 +25,13 @@ const Chat = ({ data, room }) => {
   // This useEffect generates messages in between two users
   useEffect(() => {
     if (room) {
-      firestore
+      const unsubscribe = firestore
         .collection("chats")
         .doc(room)
         .collection("messages")
         .orderBy("timestamp", "asc")
         .onSnapshot((snapshot) => {
+          console.log("Fetch Messages");
           setMessages(
             snapshot.docs.map((doc) => {
               if (
@@ -65,7 +64,12 @@ const Chat = ({ data, room }) => {
             })
           );
         });
+      // unsubscribe from firestore
+      return () => {
+        unsubscribe();
+      }
     }
+
   }, [room]);
 
   // This useEffect checks if the receiver is online or not
@@ -79,7 +83,7 @@ const Chat = ({ data, room }) => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if(input === "") return;
+    if (input === "") return;
     let status = presence === "online" ? "received" : "sent";
     firestore
       .collection("chats")
@@ -103,21 +107,57 @@ const Chat = ({ data, room }) => {
             .add({ room, id: doc?.id });
       });
     setInput("");
-    // scrolltobottom after 1 sec
     setTimeout(() => {
       scrollToBottom(document.querySelector(".chat-history"));
     }, 2000);
   };
 
+  const renderAllMessages = () => {
+    return messages.map((message) => {
+      let textClassName = message.senderId == auth.currentUser.uid
+        ? "message other-message float-right"
+        : "message my-message";
+
+      let hour = new Date(message.timestamp?.seconds * 1000).getHours();
+      let minute = new Date(message.timestamp?.seconds * 1000).getMinutes();
+
+      return (
+        <li className="clearfix" key={message.id}>
+          <div className={message.senderId == auth.currentUser.uid ? "message-data text-right" : "message-data"}>
+            <span className="message-data-time">{hour}:{minute}</span>
+            {message.senderId == auth.currentUser.uid
+              ? <img src={constants.avatarUrl} alt="avatar" />
+              : <></>}
+          </div>
+          <div className={textClassName}>
+            {message.message}
+            <span>
+              {" "}
+              {message.senderId == auth.currentUser.uid ? (
+                <img
+                  className="pt-1"
+                  src={`/${message.status}.svg`}
+                  height={20}
+                  width={20}
+                  alt={message.status} />
+              ) : (
+                ""
+              )}
+            </span>
+          </div>
+        </li>
+      );
+    });
+  }
+
   return data === null ? (
     ""
   ) : (
-    
     <div className="chat">
       <div className="chat-header clearfix">
         <div className="row">
           <div className="col-lg-6">
-            <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+            <a href="#">
               <img src={constants.avatarUrl} alt="avatar" />
             </a>
             <div className="chat-about">
@@ -129,49 +169,7 @@ const Chat = ({ data, room }) => {
       </div>
       <div className="chat-history">
         <ul className="m-b-0">
-          {
-            messages.map((message) => {
-              let textClassName =
-                message.senderId == auth.currentUser.uid
-                  ? "message other-message float-right"
-                  : "message my-message";
-              
-              let hour = new Date(message.timestamp?.seconds * 1000).getHours();
-              let minute = new Date(
-                message.timestamp?.seconds * 1000
-              ).getMinutes();
-
-              return(
-                <li className="clearfix" key={message.id}>
-                  <div className={message.senderId == auth.currentUser.uid ? "message-data text-right" : "message-data"}>
-                    <span className="message-data-time">{hour}:{minute}</span>
-                    {
-                      message.senderId == auth.currentUser.uid 
-                      ? <img src={constants.avatarUrl} alt="avatar" /> 
-                      : <></>
-                    }
-                  </div>
-                  <div className={textClassName}> 
-                    {message.message} 
-                    <span>
-                      {" "}
-                      {message.senderId == auth.currentUser.uid ? (
-                        <img
-                          className="pt-1"
-                          src={`/${message.status}.svg`}
-                          height={20}
-                          width={20}
-                          alt={message.status}
-                        />
-                      ) : (
-                        ""
-                      )}
-                    </span>
-                  </div>
-                </li>
-              );
-            })
-          }
+          {renderAllMessages()}
         </ul>
       </div>
       <div className="chat-message clearfix">
@@ -181,7 +179,11 @@ const Chat = ({ data, room }) => {
               <i className="fa fa-paper-plane"></i>
             </span>
           </div>
-          <input type="text" className="form-control" placeholder="Enter text here..." value={input} 
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter text here..."
+            value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" ? sendMessage(e) : ""}
           />

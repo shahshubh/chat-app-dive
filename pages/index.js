@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import Chat from "../components/Chat";
 import changeStatus from "../utils/changeStatus";
 
-const Home = ({ user = {} }) => {
+const Home = ({ user }) => {
   const [info, setInfo] = useState(null);
   const [room, setRoom] = useState(null);
 

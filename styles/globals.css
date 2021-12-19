@@ -265,3 +265,61 @@ body{
   height: 500px !important;
   overflow-y: scroll !important;
 }
+
+.app-header{
+  position: absolute;
+  top: 0px;
+  /* background-color: #121212; */
+  width: 100%;
+  padding: 10px;
+  justify-content: center;
+  text-align: center;
+
+}
+
+.app-signin-container{
+  background: linear-gradient(rgba(0,0,0,.5), rgba(255,255,255,.5)), url("https://wallpapercave.com/wp/wp5406324.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}
+
+.app-header{
+  color: #fff;
+}
+
+.app-header h1{
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 0px;
+}
+
+.app-header img{
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.app-header p{
+  font-size: 20px;
+  margin-bottom: 0px;
+}
+
+.app-footer{
+  position: absolute;
+  bottom: 0px;
+  background-color: #121212;
+  width: 100%;
+  color: white;
+  padding: 10px;
+}
+
+.app-footer a{
+  color: white;
+  text-decoration: none;
+}
