@@ -14,6 +14,22 @@ const Chat = ({ data, room }) => {
   const [messages, setMessages] = useState([]);
   const [snapshots] = useList(firebase.database().ref(`/online/${data?.uid}`));
   const [presence, setPresence] = useState();
+  const [reciepientData, setReciepientData] = useState();
+  const [senderData, setSenderData] = useState();
+
+  const reciepientAvatarUrl = reciepientData && reciepientData.avatarUrl ? reciepientData.avatarUrl : constants.avatarUrl;
+  const senderAvatarUrl = senderData && senderData.avatarUrl ? senderData.avatarUrl : constants.avatarUrl;
+  
+  useEffect(() => {
+    firestore.collection("users").doc(data?.uid).get().then((doc) => {
+      setReciepientData(doc.data());
+    });
+
+    firestore.collection("users").doc(auth.currentUser.uid).get().then((doc) => {
+      setSenderData(doc.data());
+    });
+
+  }, [room]);
 
   // on page load scroll to bottom
   useEffect(() => {
@@ -107,42 +123,40 @@ const Chat = ({ data, room }) => {
             .add({ room, id: doc?.id });
       });
     setInput("");
-    setTimeout(() => {
-      scrollToBottom(document.querySelector(".chat-history"));
-    }, 2000);
   };
 
   const renderAllMessages = () => {
-    return messages.map((message) => {
+    return messages.map((message, i) => {
       let textClassName = message.senderId == auth.currentUser.uid
         ? "message other-message float-right"
         : "message my-message";
 
       let hour = new Date(message.timestamp?.seconds * 1000).getHours();
       let minute = new Date(message.timestamp?.seconds * 1000).getMinutes();
+      let isPrevBySameUser = (i > 0 && message.senderId === messages[i - 1].senderId);
 
       return (
         <li className="clearfix" key={message.id}>
           <div className={message.senderId == auth.currentUser.uid ? "message-data text-right" : "message-data"}>
+            {
+              message.senderId != auth.currentUser.uid && !isPrevBySameUser
+                ? <img src={reciepientAvatarUrl} alt="avatar" />
+                : <></>
+            }
             <span className="message-data-time">{hour}:{minute}</span>
-            {message.senderId == auth.currentUser.uid
-              ? <img src={constants.avatarUrl} alt="avatar" />
-              : <></>}
+            {
+              message.senderId == auth.currentUser.uid && !isPrevBySameUser
+                ? <img src={senderAvatarUrl} alt="avatar" />
+                : <></>
+            }
           </div>
           <div className={textClassName}>
             {message.message}
             <span>
               {" "}
-              {message.senderId == auth.currentUser.uid ? (
-                <img
-                  className="pt-1"
-                  src={`/${message.status}.svg`}
-                  height={20}
-                  width={20}
-                  alt={message.status} />
-              ) : (
-                ""
-              )}
+              { message.senderId == auth.currentUser.uid ? (
+                <img className="pt-1" src={`/${message.status}.svg`} height={20} width={20} alt={message.status} />
+              ) : ( "") }
             </span>
           </div>
         </li>
@@ -158,7 +172,7 @@ const Chat = ({ data, room }) => {
         <div className="row">
           <div className="col-lg-6">
             <a href="#">
-              <img src={constants.avatarUrl} alt="avatar" />
+              <img src={reciepientAvatarUrl} alt="avatar" />
             </a>
             <div className="chat-about">
               <h6 className="m-b-0">{data?.displayName}</h6>
@@ -176,7 +190,8 @@ const Chat = ({ data, room }) => {
         <div className="input-group mb-0">
           <div className="input-group-prepend">
             <span className="input-group-text" onClick={sendMessage} style={{ height: "100%" }} >
-              <i className="fa fa-paper-plane"></i>
+            Send 
+            <i className="fa fa-paper-plane" style={{ marginLeft: "5px" }} ></i> 
             </span>
           </div>
           <input

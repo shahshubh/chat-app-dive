@@ -24,22 +24,22 @@ const Home = ({ user }) => {
   });
   return (
     <div>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossOrigin="anonymous"></link>
       <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-      {user ? (
-        <div className="container">
-        <div className="row clearfix">
-            <div className="col-lg-12">
+      {
+        user ? 
+        (
+          <div className="container">
+            <div className="row clearfix">
+              <div className="col-lg-12">
                 <div className="card chat-app">
-                    <Sidebar user={user} handler={handler} />
-                    <Chat data={info} room={room} />
+                  <Sidebar user={user} handler={handler} />
+                  <Chat data={info} room={room} />
                 </div>
+              </div>
             </div>
-        </div>
-        </div>
-      ) : (
-        <SignIn />
-      )}
+          </div>
+        ) : <SignIn />
+      }
     </div>
   );
 };

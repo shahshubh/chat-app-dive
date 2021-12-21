@@ -17,7 +17,7 @@ body{
   position: absolute;
   left: 0;
   top: 0;
-  padding: 20px;
+  /* padding: 20px; */
   z-index: 7
 }
 
@@ -33,15 +33,28 @@ body{
   transition: .5s
 }
 
+.people-list .chat-list{
+  height: 660px;
+  overflow-y: scroll;
+}
+
 .people-list .chat-list li {
   /* padding: 10px 15px; */
   list-style: none;
-  border-radius: 3px
+  border-radius: 3px;
+  padding: 10px 5px 10px 10px;
+  margin-bottom: 10px;
+  
+  
 }
 
-.people-list .chat-list li:hover {
+/* hover except 1st child */
+
+.people-list .chat-list li:hover:not(:first-child) {
   background: #efefef;
-  cursor: pointer
+  cursor: pointer;
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
 }
 
 .people-list .chat-list li.active {
@@ -159,7 +172,7 @@ body{
   pointer-events: none;
   border-bottom-color: #efefef;
   border-width: 10px;
-  margin-left: -10px
+  margin-left: -20px
 }
 
 .chat .chat-history .other-message {
@@ -322,4 +335,54 @@ body{
 .app-footer a{
   color: white;
   text-decoration: none;
+}
+
+i.fa.fa-sign-out{
+  font-size: 25px;
+  margin-right: 5px;
+  padding: 5px;
+}
+
+i.fa.fa-sign-out:hover{
+  color: red;
+  transform: scale(1.2);
+  transition-duration: .25s;
+  cursor: pointer;
+}
+
+
+.user-head-li{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #efefef !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  border-bottom-right-radius: 60px !important;
+}
+
+.app-signin-container button.btn-light{
+  box-shadow: 1px -1px 35px -5px rgba(255,255,255,0.75);
+  -webkit-box-shadow: 1px -1px 35px -5px rgba(255,255,255,0.75);
+  -moz-box-shadow: 1px -1px 35px -5px rgba(255,255,255,0.75);
+}
+
+.loader-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+::-webkit-scrollbar-thumb {
+  background: #efefef;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #1d8ecd;
 }

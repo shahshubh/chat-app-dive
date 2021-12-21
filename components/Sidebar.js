@@ -12,15 +12,24 @@ const Sidebar = ({ user, handler }) => {
 	});
 	const [snapshots] = useList(firebase.database().ref("/online"));
 	const [presence, setPresence] = useState({});
+	const [avatarUrl, setAvatarUrl] = useState("");
 
 	const router = useRouter();
+	// get current user avatarUrl from value in useEffect
+	useEffect(() => {
+		if (value) {
+			const user = value.docs.find((doc) => doc.id === auth.currentUser.uid);
+			setAvatarUrl(user.data().avatarUrl);
+		}
+	}, [value]);
+
 
 	let list = value?.docs.map((doc) => {
 		doc = doc.data();
 		let status =
 			presence[doc.uid] === "online"
 				? "online"
-				: `Last seen at ${timeDifference(new Date(), new Date(presence[doc.uid] * 1000))}`;
+				: `Last seen ${timeDifference(new Date(), new Date(presence[doc.uid] * 1000))}`;
 		return doc.uid !== auth.currentUser.uid ? (
 			<li
 				className="clearfix"
@@ -34,14 +43,14 @@ const Sidebar = ({ user, handler }) => {
 				}
 			>
 				<img
-					src={constants.avatarUrl}
+					src={doc.avatarUrl ? doc.avatarUrl : constants.avatarUrl}
 					alt="avatar"
 				/>
 				<div className="about">
 					<div className="name">{doc.displayName}</div>
 					<div className="status">
 						<i className={`fa fa-circle ${status}`}></i>
-						{status}{" "}
+						{" "}{status}
 					</div>
 				</div>
 			</li>
@@ -90,11 +99,14 @@ const Sidebar = ({ user, handler }) => {
 
 	return (
 		<div id="plist" className="people-list">
-			<div style={{ marginBottom: "40px", padding: "10px", marginBottom: "1px solid black" }} >
-				<span>{ user.displayName }</span>
-				<button type="button" className="btn btn-danger pull-right" onClick={signOut} >Sign Out</button>
-			</div>
-			<ul className="list-unstyled chat-list mt-2 mb-0">
+			<ul className="list-unstyled chat-list mb-0">
+				<li className="clearfix user-head-li">
+					<img src={avatarUrl ? avatarUrl : constants.avatarUrl} alt="avatar" />
+					<div className="about">
+						<div className="name">{user.displayName}</div>
+					</div>
+					<i className="fa fa-sign-out pull-right" onClick={signOut} ></i>
+				</li>
 				{list}
 			</ul>
 		</div>
