@@ -291,7 +291,7 @@ body{
 }
 
 .app-signin-container{
-  background: linear-gradient(rgba(0,0,0,.5), rgba(255,255,255,.5)), url("https://wallpapercave.com/wp/wp5406324.jpg");
+  background: linear-gradient(rgba(0,0,0,.5), rgba(255,255,255,.5)), url("/background-image.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
