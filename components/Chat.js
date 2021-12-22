@@ -143,7 +143,7 @@ const Chat = ({ data, room }) => {
                 ? <img src={reciepientAvatarUrl} alt="avatar" />
                 : <></>
             }
-            <span className="message-data-time">{hour}:{minute}</span>
+            { hour ? <span className="message-data-time">{hour}:{minute}</span> : <></> }
             {
               message.senderId == auth.currentUser.uid && !isPrevBySameUser
                 ? <img src={senderAvatarUrl} alt="avatar" />

@@ -63,15 +63,8 @@ const Sidebar = ({ user, handler }) => {
 		firebase
 			.auth()
 			.signOut()
-			.then(
-				function () {
-					console.log("Signed Out");
-					router.reload(window.location.pathname);
-				},
-				function (error) {
-					console.error("Sign Out Error", error);
-				}
-			);
+			.then(() => router.reload(window.location.pathname))
+			.catch((error) => console.log(error));
 	};
 
 	// This useEffect finds out who are online

@@ -24,13 +24,13 @@ Live deployed link - [https://chat-app-dive-assignment.web.app/](https://chat-ap
 <div align="center">
 
 <h4 align="center">When recipient has read the message (Blue double tick).</h4>
-<img style="margin: 10px;" src="./demo/1.PNG"/>
+<img style="margin: 10px;" src="./demo/3.PNG"/>
 
 <h4 align="center">When message is delivered but not read by recipient (Double tick).</h4>
 <img style="margin: 10px;" src="./demo/2.PNG"/>
 
 <h4 align="center">When message is delivered but recipient is offline (Single tick).</h4>
-<img style="margin: 10px;" src="./demo/3.PNG"/>
+<img style="margin: 10px;" src="./demo/1.PNG"/>
 
 </div>
 
